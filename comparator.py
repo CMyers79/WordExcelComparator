@@ -21,8 +21,9 @@ if __name__ == "__main__":
         ecm_savings_workflow.extract()
 
     if os.path.isfile(directory + '\Vol1.docx'):
-        # vol_1_workflow = docExtractor('docx')
-        pass
+        vol_1_workflow = docExtractor('docx')
+        vol_1_workflow.load('Vol1.docx')
+        vol_1_workflow.extract()
 
     if os.path.isfile(directory + '\Vol2.docx'):
         # vol_2_workflow = docExtractor('docx')
