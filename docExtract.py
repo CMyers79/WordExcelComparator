@@ -2,7 +2,6 @@
 #  labels that correspond to the cost and energy savings in eProjectBuilder Schedule 4 columns Y and AE.
 #  The $/yr and MBTU/yr numbers are then copied to the Comparator.xlsx template and compared to the Schedule 4 values.
 
-
 import openpyxl
 from docx import Document
 
@@ -38,38 +37,38 @@ class docExtractor:
 
             # populate arrays with 250 ECM rows plus the total
             for i in range(251):
-                ecm.append(schedule_4.cell(row=i+8, column=0).value)
-                mbtu.append(schedule_4.cell(row=i+8, column=24).value)
-                cost.append(schedule_4.cell(row=i+8, column=30).value)
+                ecm.append(schedule_4.cell(row=i+8, column=1).value)
+                mbtu.append(schedule_4.cell(row=i+8, column=25).value)
+                cost.append(schedule_4.cell(row=i+8, column=31).value)
                 # add non-blank row indices to include
                 if ecm[i] not in (None, ''):
                     include.append(i)
             # copy non-blank ECM rows to Comparator.xlsx
             for i in range(len(include) - 1):
-                comparator.cell(row=9 + i, column=0, value=ecm[include[i]])
-                comparator.cell(row=9 + i, column=1, value=cost[include[i]])
-                comparator.cell(row=9 + i, column=6, value=mbtu[include[i]])
+                comparator.cell(row=10 + i, column=1, value=ecm[include[i]])
+                comparator.cell(row=10 + i, column=2, value=cost[include[i]])
+                comparator.cell(row=10 + i, column=6, value=mbtu[include[i]])
 
             # copy totals to Comparator.xlsx
-            comparator.cell(row=9 + i, column=0, value='Total')
-            comparator.cell(row=7, column=1, value=cost[250])
-            comparator.cell(row=7, column=6, value=mbtu[250])
+            comparator.cell(row=8, column=2, value=cost[250])
+            comparator.cell(row=8, column=6, value=mbtu[250])
 
         # pull data from the savings per ECM template
         elif self.doc_type == 'xlsx':
             ecm_savings = self.data.get_sheet_by_name('Sheet1')
 
             # pull data by ECM number starting with B3, copy directly to comparator
-            row = 2
-            while ecm_savings.cell(row=row, column=1).value not in (None, ''):
-                comparator.cell(row=7 + row, column=9, value=ecm_savings.cell(row=row, column=1).value)
-                comparator.cell(row=7 + row, column=10, value=ecm_savings.cell(row=row, column=9).value)
+            row = 3
+            while ecm_savings.cell(row=row, column=2).value not in (None, ''):
+                comparator.cell(row=7 + row, column=10, value=ecm_savings.cell(row=row, column=2).value)
+                comparator.cell(row=7 + row, column=11, value=ecm_savings.cell(row=row, column=9).value)
                 row += 1
 
             # copy total to Comparator.xlsx
-            comparator.cell(row=7 + row, column=9, value='Total')
-            comparator.cell(row=7 + row, column=10, value=ecm_savings.cell(row=row, column=9).value)
+            comparator.cell(row=8, column=11, value=ecm_savings.cell(row=row, column=9).value)
 
         # search for table data within Vol1 or Vol2 Word docx file
         elif self.doc_type == 'docx':
             pass
+
+        self.output.save('Comparator.xlsx')
