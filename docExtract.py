@@ -44,6 +44,7 @@ class docExtractor:
         cost = []
         mbtu = []
         include = []
+        ecm_split = [[], []]
 
         # pull data from columns Y and AE in the epb calculating template
         if self.doc_type == 'epb':
@@ -66,6 +67,22 @@ class docExtractor:
             # copy totals to Comparator.xlsx
             comparator.cell(row=7, column=2, value=cost[250])
             comparator.cell(row=7, column=7, value=mbtu[250])
+
+            # populate ecm_split list with building names and ecm numbers
+            for title in ecm:
+                i = len(title) - 2  # the ecm number may end in a letter, so look at the penultimate character
+                # find the last non-decimal character, this is the end of the building name
+                while title[i] in "0123456789.":
+                    i -= 1
+                # add the building name to ecm_split[0]
+                ecm_split[0].append(title[:i + 1])
+                # find the first digit after the building name, the start of the ecm number
+                while title[i] not in "012456789":
+                    i += 1
+                # add all building ecm numbers to ecm_split[1]
+                ecm_split[1].append(title[i:])
+
+
 
         # pull data from the savings per ECM template
         elif self.doc_type == 'xlsx':
@@ -103,8 +120,5 @@ class docExtractor:
                                 comparator.cell(row=7, column=8 + offset, value=float(cell_text[i+1][j].replace(",", "")))
                             elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
                                 comparator.cell(row=7, column=8 + offset, value=float(cell_text[i][j + 1].replace(",", "")))
-
-
-
 
         self.output.save('Comparator.xlsx')

@@ -25,8 +25,7 @@ if __name__ == "__main__":
         vol_1_workflow.load('Vol1.docx')
         vol_1_workflow.extract()
 
-    if os.path.isfile(directory + '\Vol2.docx'):
-        # vol_2_workflow = docExtractor('docx')
-        pass
-
-
+    # if os.path.isfile(directory + '\Vol2.docx'):
+    #     vol_2_workflow = docExtractor('docx')
+    #     vol_2_workflow.load('Vol2.docx')
+    #     vol_2_workflow.extract()
