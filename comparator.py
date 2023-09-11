@@ -10,22 +10,25 @@ if __name__ == "__main__":
     directory = os.getcwd()
     epb_workflow = ecm_savings_workflow = vol_1_workflow = vol_2_workflow = None
 
+    ecm_list = []
+
     if os.path.isfile(directory + '\epb.xlsx'):
         epb_workflow = docExtractor('epb')
         epb_workflow.load('epb.xlsx')
-        epb_workflow.extract()
+        epb_workflow.extract(ecm_list)
+        ecm_list = epb_workflow.ecms
 
     if os.path.isfile(directory + '\ECMSavings.xlsx'):
         ecm_savings_workflow = docExtractor('xlsx')
         ecm_savings_workflow.load('ECMSavings.xlsx')
-        ecm_savings_workflow.extract()
+        ecm_savings_workflow.extract(ecm_list)
 
     if os.path.isfile(directory + '\Vol1.docx'):
         vol_1_workflow = docExtractor('docx')
         vol_1_workflow.load('Vol1.docx')
-        vol_1_workflow.extract()
+        vol_1_workflow.extract(ecm_list)
 
     # if os.path.isfile(directory + '\Vol2.docx'):
     #     vol_2_workflow = docExtractor('docx')
     #     vol_2_workflow.load('Vol2.docx')
-    #     vol_2_workflow.extract()
+    #     vol_2_workflow.extract(ecm_list)
