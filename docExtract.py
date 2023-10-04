@@ -47,6 +47,14 @@ class docExtractor:
         cost = []
         mbtu = []
         include = []
+        baseline = [[], [], [], []]
+        savings = [[], [], [], []]
+        cost_savings = [[], [], [], []]
+        m_v_option = []
+        o_m_cost_savings = []
+        other_cost_savings = []
+        price = []
+        spb = []
 
         # TODO refactor to use class inheritance
         # pull data from columns Y and AE in the epb calculating template
@@ -64,11 +72,31 @@ class docExtractor:
                 ecm.append(schedule_4.cell(row=i+8, column=1).value)
                 mbtu.append(schedule_4.cell(row=i+8, column=25).value)
                 cost.append(schedule_4.cell(row=i+8, column=31).value)
+                m_v_option.append(schedule_4.cell(row=i + 8, column=4).value)
+                o_m_cost_savings.append(schedule_4.cell(row=i + 8, column=29).value)
+                other_cost_savings.append(schedule_4.cell(row=i + 8, column=30).value)
+                price.append(schedule_4.cell(row=i + 8, column=32).value)
+                spb.append(schedule_4.cell(row=i + 8, column=33).value)
+                baseline[0].append(schedule_4.cell(row=i+8, column=5).value)  # kWh
+                baseline[1].append(schedule_4.cell(row=i+8, column=6).value)  # kW
+                baseline[2].append(schedule_4.cell(row=i+8, column=7).value)  # MBtu
+                baseline[3].append(schedule_4.cell(row=i+8, column=10).value)  # kGal
+                savings[0].append(schedule_4.cell(row=i + 8, column=15).value)  # kWh
+                savings[1].append(schedule_4.cell(row=i + 8, column=17).value)  # kW
+                savings[2].append(schedule_4.cell(row=i + 8, column=19).value)  # MBtu
+                savings[3].append(schedule_4.cell(row=i + 8, column=27).value)  # kGal
+                cost_savings[0].append(schedule_4.cell(row=i + 8, column=16).value)  # kWh
+                cost_savings[1].append(schedule_4.cell(row=i + 8, column=18).value)  # kW
+                cost_savings[2].append(schedule_4.cell(row=i + 8, column=20).value)  # MBtu
+                cost_savings[3].append(schedule_4.cell(row=i + 8, column=28).value)  # kGal
+
                 # add non-blank row indices to include
                 if ecm[i] not in (None, ''):
                     include.append(i)
+
             # remove 'TOTALS' from ecm
             ecm.pop()
+
             # copy non-blank ECM rows to Comparator.xlsx
             for i in range(len(include) - 1):
                 comparator.cell(row=17 + i, column=1, value=ecm[include[i]])
@@ -99,18 +127,18 @@ class docExtractor:
                 self.ecms[1].append(title[i:].strip())
 
         # pull data from the savings per ECM template
-        elif self.doc_type == 'xlsx':
-            ecm_savings = self.data.get_sheet_by_name('Sheet1')
-
-            # pull data by ECM number starting with B3, copy directly to comparator
-            row = 3
-            while ecm_savings.cell(row=row, column=2).value not in (None, ''):
-                comparator.cell(row=14 + row, column=12, value=ecm_savings.cell(row=row, column=2).value)
-                comparator.cell(row=14 + row, column=13, value=ecm_savings.cell(row=row, column=9).value)
-                row += 1
-
-            # copy total to Comparator.xlsx
-            comparator.cell(row=15, column=13, value=ecm_savings.cell(row=row, column=9).value)
+        # elif self.doc_type == 'xlsx':
+        #     ecm_savings = self.data.get_sheet_by_name('Sheet1')
+        #
+        #     # pull data by ECM number starting with B3, copy directly to comparator
+        #     row = 3
+        #     while ecm_savings.cell(row=row, column=2).value not in (None, ''):
+        #         comparator.cell(row=14 + row, column=12, value=ecm_savings.cell(row=row, column=2).value)
+        #         comparator.cell(row=14 + row, column=13, value=ecm_savings.cell(row=row, column=9).value)
+        #         row += 1
+        #
+        #     # copy total to Comparator.xlsx
+        #     comparator.cell(row=15, column=13, value=ecm_savings.cell(row=row, column=9).value)
 
         # search for table data within Vol1 or Vol2 Word docx file
         elif self.doc_type == 'docx':
