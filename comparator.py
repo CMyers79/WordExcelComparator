@@ -2,7 +2,7 @@
 #  labels that correspond to the cost and energy savings in eProjectBuilder Schedule 4 columns Y and AE.
 #  The $/yr and MBTU/yr numbers are then copied to the Comparator.xlsx template and compared to the Schedule 4 values.
 
-from docExtract import docExtractor
+from docExtract import DocExtractor
 import os
 
 if __name__ == "__main__":
@@ -13,22 +13,22 @@ if __name__ == "__main__":
     ecm_list = []
 
     if os.path.isfile(directory + '\epb.xlsx'):
-        epb_workflow = docExtractor('epb')
+        epb_workflow = DocExtractor('epb')
         epb_workflow.load('epb.xlsx')
         epb_workflow.extract(ecm_list)
         ecm_list = epb_workflow.ecms
 
     if os.path.isfile(directory + '\ECMSavings.xlsx'):
-        ecm_savings_workflow = docExtractor('xlsx')
+        ecm_savings_workflow = DocExtractor('xlsx')
         ecm_savings_workflow.load('ECMSavings.xlsx')
         ecm_savings_workflow.extract(ecm_list)
 
     if os.path.isfile(directory + '\Vol1.docx'):
-        vol_1_workflow = docExtractor('docx')
+        vol_1_workflow = DocExtractor('docx')
         vol_1_workflow.load('Vol1.docx')
         vol_1_workflow.extract(ecm_list)
 
     # if os.path.isfile(directory + '\Vol2.docx'):
-    #     vol_2_workflow = docExtractor('docx')
+    #     vol_2_workflow = DocExtractor('docx')
     #     vol_2_workflow.load('Vol2.docx')
     #     vol_2_workflow.extract(ecm_list)

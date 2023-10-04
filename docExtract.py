@@ -18,7 +18,7 @@ def is_float(string):
 
 
 # The docExtractor class should be accessed by the workflow in comparator.py.
-class docExtractor:
+class DocExtractor:
     # construct an instance of docExtractor with doc_type 'docx', 'xlsx', or 'epb'
     def __init__(self, doc_type):
         self.data = None
@@ -163,7 +163,27 @@ class docExtractor:
                 offset = 1
 
             # populate list with alias inputs
-            alias_cells = [(3 + offset, 2), (3 + offset, 4), (3 + offset, 7), (3 + offset, 9)]
+            alias_cells = [(11 + offset, 2),
+                           (11 + offset, 4),
+                           (11 + offset, 7),
+                           (11 + offset, 9),
+                           (11 + offset, 12),
+                           (11 + offset, 17),
+                           (11 + offset, 22),
+                           (11 + offset, 27),
+                           (11 + offset, 32),
+                           (11 + offset, 37),
+                           (11 + offset, 42),
+                           (11 + offset, 47),
+                           (11 + offset, 52),
+                           (11 + offset, 57),
+                           (11 + offset, 62),
+                           (11 + offset, 67),
+                           (11 + offset, 72),
+                           (11 + offset, 77),
+                           (11 + offset, 82),
+                           (11 + offset, 87)]
+
             aliases = [comparator.cell(row=i, column=j).value for i, j in alias_cells]
 
             # iterate through each table in the Word docx (xml) and load the cell values into an array
