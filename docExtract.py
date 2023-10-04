@@ -48,9 +48,16 @@ class docExtractor:
         mbtu = []
         include = []
 
+        # TODO refactor to use class inheritance
         # pull data from columns Y and AE in the epb calculating template
         if self.doc_type == 'epb':
             schedule_4 = self.data.get_sheet_by_name('Sch4-Cost Savings by ECM')
+            summary = self.data.get_sheet_by_name('Summary Schedule')
+
+            # populate identifier fields in comparator
+            comparator.cell(row=2, column=2, value=summary.cell(row=16, column=3).value)
+            # no reliable data source for ESPC Phase
+            comparator.cell(row=4, column=2, value=summary.cell(row=9, column=3).value)
 
             # populate arrays with 250 ECM rows plus the totals
             for i in range(251):
@@ -64,15 +71,15 @@ class docExtractor:
             ecm.pop()
             # copy non-blank ECM rows to Comparator.xlsx
             for i in range(len(include) - 1):
-                comparator.cell(row=9 + i, column=1, value=ecm[include[i]])
-                comparator.cell(row=9 + i, column=2, value=cost[include[i]])
-                comparator.cell(row=9 + i, column=7, value=mbtu[include[i]])
+                comparator.cell(row=17 + i, column=1, value=ecm[include[i]])
+                comparator.cell(row=17 + i, column=2, value=cost[include[i]])
+                comparator.cell(row=17 + i, column=7, value=mbtu[include[i]])
 
             # copy totals to Comparator.xlsx
-            comparator.cell(row=7, column=2, value=cost[250])
-            comparator.cell(row=7, column=7, value=mbtu[250])
-            comparator.cell(row=9 + len(include) - 1, column=2, value=cost[250])
-            comparator.cell(row=9 + len(include) - 1, column=7, value=mbtu[250])
+            comparator.cell(row=15, column=2, value=cost[250])
+            comparator.cell(row=15, column=7, value=mbtu[250])
+            comparator.cell(row=17 + len(include) - 1, column=2, value=cost[250])
+            comparator.cell(row=17 + len(include) - 1, column=7, value=mbtu[250])
 
             # populate ecm_split list with building names and ecm numbers
             for title in [ecm_title for ecm_title in ecm if ecm_title not in ["", None]]:
@@ -90,8 +97,7 @@ class docExtractor:
                     i += 1
                 # add all building ecm numbers to ecms[1]
                 self.ecms[1].append(title[i:].strip())
-            print(self.ecms[0])
-            print(self.ecms[1])
+
         # pull data from the savings per ECM template
         elif self.doc_type == 'xlsx':
             ecm_savings = self.data.get_sheet_by_name('Sheet1')
@@ -99,12 +105,12 @@ class docExtractor:
             # pull data by ECM number starting with B3, copy directly to comparator
             row = 3
             while ecm_savings.cell(row=row, column=2).value not in (None, ''):
-                comparator.cell(row=6 + row, column=12, value=ecm_savings.cell(row=row, column=2).value)
-                comparator.cell(row=6 + row, column=13, value=ecm_savings.cell(row=row, column=9).value)
+                comparator.cell(row=14 + row, column=12, value=ecm_savings.cell(row=row, column=2).value)
+                comparator.cell(row=14 + row, column=13, value=ecm_savings.cell(row=row, column=9).value)
                 row += 1
 
             # copy total to Comparator.xlsx
-            comparator.cell(row=7, column=13, value=ecm_savings.cell(row=row, column=9).value)
+            comparator.cell(row=15, column=13, value=ecm_savings.cell(row=row, column=9).value)
 
         # search for table data within Vol1 or Vol2 Word docx file
         elif self.doc_type == 'docx':
@@ -131,7 +137,6 @@ class docExtractor:
                             # if ECM cost or MBTU table found
                             if cell == alias and alias in aliases[2:]:
                                 # find the building name in the first row
-                                # TODO add backup building detection using the ECM list
                                 n = 0
                                 while n < len(cell_text[0]) - 1 and cell_text[0][n] in ["", None]:
                                     n += 1
@@ -162,12 +167,12 @@ class docExtractor:
                             if cell == alias and alias == aliases[0]:
                                 # pull the numerical value in the cell to either the right or bottom of the alias
                                 if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace("$", "")):
-                                    comparator.cell(row=7,
+                                    comparator.cell(row=15,
                                                     column=3 + offset,
                                                     value=float(cell_text[i+1][j].replace(",", "").replace("$", "")))
 
                                 elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1].replace("$", "")):
-                                    comparator.cell(row=7,
+                                    comparator.cell(row=15,
                                                     column=3 + offset,
                                                     value=float(cell_text[i][j + 1].replace(",", "").replace("$", "")))
 
@@ -175,12 +180,12 @@ class docExtractor:
                             elif cell == alias and alias == aliases[1]:
                                 # pull the numerical value in the cell to either the right or bottom of the alias
                                 if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j]):
-                                    comparator.cell(row=7,
+                                    comparator.cell(row=15,
                                                     column=8 + offset,
                                                     value=float(cell_text[i+1][j].replace(",", "")))
 
                                 elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
-                                    comparator.cell(row=7,
+                                    comparator.cell(row=15,
                                                     column=8 + offset,
                                                     value=float(cell_text[i][j + 1].replace(",", "")))
 
@@ -191,7 +196,7 @@ class docExtractor:
                                     k = i
 
                                     while k < len(cell_text) - 1 and is_float(cell_text[k + 1][j].replace("$", "")) and k - i < b_ecms:
-                                        comparator.cell(row=9 + b_offset + k - i,
+                                        comparator.cell(row=17 + b_offset + k - i,
                                                         column=3 + offset,
                                                         value=float(cell_text[k+1][j].replace(",", "").replace("$", "")))
                                         k += 1
@@ -200,7 +205,7 @@ class docExtractor:
                                     k = j
 
                                     while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1].replace("$", "")) and k - j < b_ecms:
-                                        comparator.cell(row=9 + b_offset + k - j,
+                                        comparator.cell(row=17 + b_offset + k - j,
                                                         column=3 + offset,
                                                         value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
                                         k += 1
@@ -212,7 +217,7 @@ class docExtractor:
                                     k = i
 
                                     while k < len(cell_text) - 1 and is_float(cell_text[k + 1][j]) and k - i < b_ecms:
-                                        comparator.cell(row=9 + b_offset + k - i,
+                                        comparator.cell(row=17 + b_offset + k - i,
                                                         column=8 + offset,
                                                         value=float(cell_text[k + 1][j].replace(",", "")))
                                         k += 1
@@ -221,7 +226,7 @@ class docExtractor:
                                     k = j
 
                                     while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
-                                        comparator.cell(row=9 + b_offset + k - j,
+                                        comparator.cell(row=17 + b_offset + k - j,
                                                         column=8 + offset,
                                                         value=float(cell_text[i][k + 1].replace(",", "")))
 
