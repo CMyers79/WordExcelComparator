@@ -118,6 +118,7 @@ class DocExtractor:
                 comparator.cell(row=17 + i, column=78, value=m_v_option[include[i]])
                 comparator.cell(row=17 + i, column=83, value=o_m_cost_savings[include[i]])
                 comparator.cell(row=17 + i, column=88, value=other_cost_savings[include[i]])
+                comparator.cell(row=17 + i, column=93, value=spb[include[i]])
 
             # copy totals to Comparator.xlsx
             comparator.cell(row=15, column=2, value=cost[250])
@@ -182,7 +183,7 @@ class DocExtractor:
                            (11 + offset, 72),
                            (11 + offset, 77),
                            (11 + offset, 82),
-                           (11 + offset, 87)]
+                           (11 + offset, 87)]  # value goes in aliases[19]
 
             aliases = [comparator.cell(row=i, column=j).value for i, j in alias_cells]
 
@@ -198,7 +199,7 @@ class DocExtractor:
                         # search each table cell for each alias
                         for alias in aliases:
 
-                            # if ECM cost or MBTU table found
+                            # if building or ECM table found
                             if cell == alias and alias in aliases[2:]:
                                 # find the building name in the first row
                                 n = 0
@@ -293,5 +294,50 @@ class DocExtractor:
                                         comparator.cell(row=17 + b_offset + k - j,
                                                         column=8 + offset,
                                                         value=float(cell_text[i][k + 1].replace(",", "")))
+
+                            # if ECM costs are found
+                            elif cell == alias and alias == aliases[4]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "").replace("$", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(
+                                            cell_text[k + 1][j].replace(",", "").replace("$", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=14 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "").replace("$", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=14 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
+
+                                # if baseline kWh is found
+                                elif cell == alias and alias == aliases[5]:
+                                    # pull the numerical values in the cells to either the right or bottom of the alias
+                                    if i < len(cell_text) - 1 and is_float(
+                                            cell_text[i + 1][j].replace(",", "")):
+                                        k = i
+
+                                        while k < len(cell_text) - 1 and is_float(
+                                                cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                            comparator.cell(row=17 + b_offset + k - i,
+                                                            column=14 + offset,
+                                                            value=float(
+                                                                cell_text[k + 1][j].replace(",", "")))
+                                            k += 1
+
+                                    elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                        k = j
+
+                                        while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                            comparator.cell(row=17 + b_offset + k - j,
+                                                            column=14 + offset,
+                                                            value=float(
+                                                                cell_text[i][k + 1].replace(",", "")))
 
         self.output.save('Comparator.xlsx')
