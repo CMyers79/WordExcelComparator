@@ -465,22 +465,39 @@ class DocExtractor:
                             # if kgal savings is found
                             elif cell == alias and alias == aliases[12]:
                                 # pull the numerical values in the cells to either the right or bottom of the alias
-                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "").replace("$", "")):
+                                m = i
+                                n = j
+                                # skip blank cells and check the first populated cell
+                                while cell_text[m + 1][j] == '\xa0' and m < len(cell_text) - 1:
+                                    m += 1
+                                while cell_text[i][n + 1] == '\xa0' and n < len(cell_text[i]) - 1:
+                                    n += 1
+
+                                if is_float(cell_text[m + 1][j].replace(",", "").replace("$", "")):
                                     k = i
 
-                                    while k < len(cell_text) - 1 and is_float(
-                                            cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
-                                        comparator.cell(row=17 + b_offset + k - i,
-                                                        column=54 + offset,
-                                                        value=float(cell_text[k + 1][j].replace(",", "").replace("$", "")))
+                                    while k < len(cell_text) - 1 and (is_float(cell_text[k + 1][j].replace(",", "")) or cell_text[k + 1][j] == '\xa0') \
+                                            and k - i < b_ecms:
+                                        if cell_text[k + 1][j] == '\xa0':
+                                            k += 1
+                                            continue
+                                        else:
+                                            comparator.cell(row=17 + b_offset + k - i,
+                                                            column=54 + offset,
+                                                            value=float(cell_text[k + 1][j].replace(",", "").replace("$", "")))
                                         k += 1
 
-                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                elif is_float(cell_text[i][n + 1].replace(",", "").replace("$", "")):
                                     k = j
 
-                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
-                                        comparator.cell(row=17 + b_offset + k - j,
-                                                        column=54 + offset,
-                                                        value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
+                                    while k < len(cell_text[i]) - 1 and (is_float(cell_text[i][k + 1].replace(",", "")) or cell_text[i][k + 1] == '\xa0') \
+                                            and k - j < b_ecms:
+                                        if cell_text[i][k + 1] == '\xa0':
+                                            k += 1
+                                            continue
+                                        else:
+                                            comparator.cell(row=17 + b_offset + k - j,
+                                                            column=54 + offset,
+                                                            value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
 
         self.output.save('Comparator.xlsx')
