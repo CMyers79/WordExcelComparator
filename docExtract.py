@@ -186,7 +186,8 @@ class DocExtractor:
                            (11 + offset, 87)]  # value goes in aliases[19]
 
             aliases = [comparator.cell(row=i, column=j).value for i, j in alias_cells]
-
+            print("Extracting from Vol. 1:")
+            print(aliases)
             # iterate through each table in the Word docx (xml) and load the cell values into an array
             for table in self.data.tables:
                 cell_text = []
@@ -227,7 +228,7 @@ class DocExtractor:
 
                                         b_ecms += 1
 
-                            # TODO refactor this repetitive section
+                            # TODO refactor this repetitive section, standardize comparator table column spacing
                             # if total $ savings is found:
                             if cell == alias and alias == aliases[0]:
                                 # pull the numerical value in the cell to either the right or bottom of the alias
@@ -316,28 +317,170 @@ class DocExtractor:
                                                         column=14 + offset,
                                                         value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
 
-                                # if baseline kWh is found
-                                elif cell == alias and alias == aliases[5]:
-                                    # pull the numerical values in the cells to either the right or bottom of the alias
-                                    if i < len(cell_text) - 1 and is_float(
-                                            cell_text[i + 1][j].replace(",", "")):
-                                        k = i
+                            # if baseline kWh is found
+                            elif cell == alias and alias == aliases[5]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "")):
+                                    k = i
 
-                                        while k < len(cell_text) - 1 and is_float(
-                                                cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
-                                            comparator.cell(row=17 + b_offset + k - i,
-                                                            column=14 + offset,
-                                                            value=float(
-                                                                cell_text[k + 1][j].replace(",", "")))
-                                            k += 1
+                                    while k < len(cell_text) - 1 and is_float(cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=19 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "")))
+                                        k += 1
 
-                                    elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
-                                        k = j
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
 
-                                        while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
-                                            comparator.cell(row=17 + b_offset + k - j,
-                                                            column=14 + offset,
-                                                            value=float(
-                                                                cell_text[i][k + 1].replace(",", "")))
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=19 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "")))
+
+                            # if baseline kW is found
+                            elif cell == alias and alias == aliases[6]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(
+                                        cell_text[i + 1][j].replace(",", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=24 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=24 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "")))
+
+                            # if baseline gas is found
+                            elif cell == alias and alias == aliases[7]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=29 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=29 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "")))
+
+                            # if baseline kgal is found
+                            elif cell == alias and alias == aliases[8]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(
+                                            cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=34 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=34 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "")))
+
+                            # if kWh savings is found
+                            elif cell == alias and alias == aliases[9]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(
+                                        cell_text[i + 1][j].replace(",", "").replace("$", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=39 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "").replace("$", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=39 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
+
+                            # if kW savings is found
+                            elif cell == alias and alias == aliases[10]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "").replace("$", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(
+                                            cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=44 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "").replace("$", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=44 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
+
+                            # if gas savings is found
+                            elif cell == alias and alias == aliases[11]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "").replace("$", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(
+                                            cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=49 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "").replace("$", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=49 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
+
+                            # if kgal savings is found
+                            elif cell == alias and alias == aliases[12]:
+                                # pull the numerical values in the cells to either the right or bottom of the alias
+                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace(",", "").replace("$", "")):
+                                    k = i
+
+                                    while k < len(cell_text) - 1 and is_float(
+                                            cell_text[k + 1][j].replace(",", "")) and k - i < b_ecms:
+                                        comparator.cell(row=17 + b_offset + k - i,
+                                                        column=54 + offset,
+                                                        value=float(cell_text[k + 1][j].replace(",", "").replace("$", "")))
+                                        k += 1
+
+                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                    k = j
+
+                                    while k < len(cell_text[i]) - 1 and is_float(cell_text[i][k + 1]):
+                                        comparator.cell(row=17 + b_offset + k - j,
+                                                        column=54 + offset,
+                                                        value=float(cell_text[i][k + 1].replace(",", "").replace("$", "")))
 
         self.output.save('Comparator.xlsx')
