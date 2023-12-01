@@ -99,32 +99,32 @@ class DocExtractor:
 
             # copy non-blank ECM rows to Comparator.xlsx
             for i in range(len(include) - 1):
-                comparator.cell(row=17 + i, column=1, value=ecm[include[i]])
-                comparator.cell(row=17 + i, column=2, value=cost[include[i]])
-                comparator.cell(row=17 + i, column=7, value=mbtu[include[i]])
-                comparator.cell(row=17 + i, column=12, value=price[include[i]])
-                comparator.cell(row=17 + i, column=17, value=baseline[0][include[i]])
-                comparator.cell(row=17 + i, column=22, value=baseline[1][include[i]])
-                comparator.cell(row=17 + i, column=27, value=baseline[2][include[i]])
-                comparator.cell(row=17 + i, column=32, value=baseline[3][include[i]])
-                comparator.cell(row=17 + i, column=37, value=savings[0][include[i]])
-                comparator.cell(row=17 + i, column=42, value=savings[1][include[i]])
-                comparator.cell(row=17 + i, column=47, value=savings[2][include[i]])
-                comparator.cell(row=17 + i, column=52, value=savings[3][include[i]])
-                comparator.cell(row=17 + i, column=57, value=cost_savings[0][include[i]])
-                comparator.cell(row=17 + i, column=62, value=cost_savings[1][include[i]])
-                comparator.cell(row=17 + i, column=67, value=cost_savings[2][include[i]])
-                comparator.cell(row=17 + i, column=72, value=cost_savings[3][include[i]])
-                comparator.cell(row=17 + i, column=77, value=m_v_option[include[i]])
-                comparator.cell(row=17 + i, column=82, value=o_m_cost_savings[include[i]])
-                comparator.cell(row=17 + i, column=87, value=other_cost_savings[include[i]])
-                comparator.cell(row=17 + i, column=92, value=spb[include[i]])
+                comparator.cell(row=18 + i, column=1, value=ecm[include[i]])
+                comparator.cell(row=18 + i, column=2, value=cost[include[i]])
+                comparator.cell(row=18 + i, column=9, value=mbtu[include[i]])
+                comparator.cell(row=18 + i, column=16, value=price[include[i]])
+                comparator.cell(row=18 + i, column=23, value=baseline[0][include[i]])
+                comparator.cell(row=18 + i, column=30, value=baseline[1][include[i]])
+                comparator.cell(row=18 + i, column=37, value=baseline[2][include[i]])
+                comparator.cell(row=18 + i, column=44, value=baseline[3][include[i]])
+                comparator.cell(row=18 + i, column=51, value=savings[0][include[i]])
+                comparator.cell(row=18 + i, column=58, value=savings[1][include[i]])
+                comparator.cell(row=18 + i, column=65, value=savings[2][include[i]])
+                comparator.cell(row=18 + i, column=72, value=savings[3][include[i]])
+                comparator.cell(row=18 + i, column=79, value=cost_savings[0][include[i]])
+                comparator.cell(row=18 + i, column=86, value=cost_savings[1][include[i]])
+                comparator.cell(row=18 + i, column=93, value=cost_savings[2][include[i]])
+                comparator.cell(row=18 + i, column=100, value=cost_savings[3][include[i]])
+                comparator.cell(row=18 + i, column=107, value=m_v_option[include[i]])
+                comparator.cell(row=18 + i, column=114, value=o_m_cost_savings[include[i]])
+                comparator.cell(row=18 + i, column=121, value=other_cost_savings[include[i]])
+                comparator.cell(row=18 + i, column=128, value=spb[include[i]])
 
             # copy totals to Comparator.xlsx
-            comparator.cell(row=15, column=2, value=cost[250])
-            comparator.cell(row=15, column=7, value=mbtu[250])
-            comparator.cell(row=17 + len(include) - 1, column=2, value=cost[250])
-            comparator.cell(row=17 + len(include) - 1, column=7, value=mbtu[250])
+            comparator.cell(row=16, column=2, value=cost[250])
+            comparator.cell(row=16, column=9, value=mbtu[250])
+            comparator.cell(row=18 + len(include) - 1, column=2, value=cost[250])
+            comparator.cell(row=18 + len(include) - 1, column=9, value=mbtu[250])
 
             # populate ecm_split list with building names and ecm numbers
             for title in [ecm_title for ecm_title in ecm if ecm_title not in ["", None]]:
@@ -150,43 +150,21 @@ class DocExtractor:
             # pull data by ECM number starting with B3, copy directly to comparator
             row = 3
             while ecm_savings.cell(row=row, column=2).value not in (None, ''):
-                comparator.cell(row=14 + row, column=96, value=ecm_savings.cell(row=row, column=2).value)
-                comparator.cell(row=14 + row, column=97, value=ecm_savings.cell(row=row, column=9).value)
+                comparator.cell(row=18 + row, column=135, value=ecm_savings.cell(row=row, column=2).value)
+                comparator.cell(row=18 + row, column=136, value=ecm_savings.cell(row=row, column=9).value)
                 row += 1
 
             # copy total to Comparator.xlsx
-            comparator.cell(row=15, column=97, value=ecm_savings.cell(row=row, column=9).value)
+            comparator.cell(row=18, column=136, value=ecm_savings.cell(row=row, column=9).value)
 
-        # search for table data within Vol1 or Vol2 Word docx file
+        # search for table data within Word docx file
         elif self.doc_type == 'docx':
-            offset = 0
-            if self.doc_name == 'Vol2':
-                offset = 1
-
             # populate list with alias inputs
-            alias_cells = [(11 + offset, 2),
-                           (11 + offset, 4),
-                           (11 + offset, 7),
-                           (11 + offset, 9),
-                           (11 + offset, 12),
-                           (11 + offset, 17),
-                           (11 + offset, 22),
-                           (11 + offset, 27),
-                           (11 + offset, 32),
-                           (11 + offset, 37),
-                           (11 + offset, 42),
-                           (11 + offset, 47),
-                           (11 + offset, 52),
-                           (11 + offset, 57),
-                           (11 + offset, 62),
-                           (11 + offset, 67),
-                           (11 + offset, 72),
-                           (11 + offset, 77),
-                           (11 + offset, 82),
-                           (11 + offset, 87),
-                           (11 + offset, 92)]  # value goes in aliases[20]
+            aliases = [[comparator.cell(row=13, column=3 + i).value for i in range(5)], [comparator.cell(row=13, column=10 + j).value for j in range(5)]]
+            for data_offset in range(21):
+                for alias_offset in range(5):
+                    aliases.append([comparator.cell(row=13, column=3 + 7 * data_offset + alias_offset).value])
 
-            aliases = [comparator.cell(row=i, column=j).value for i, j in alias_cells]
             print("Extracting:")
             # iterate through each table in the Word docx (xml) and load the cell values into an array
             for q, table in enumerate(self.data.tables):
@@ -198,100 +176,101 @@ class DocExtractor:
                 for i, row in enumerate(cell_text):
                     for j, cell in enumerate(row):
                         # search each table cell for each alias
-                        for k, alias in enumerate(aliases):
+                        for k, alias_5 in enumerate(aliases):
                             # if total $ savings is found:
-                            if cell == alias and alias == aliases[0]:
-                                print("Table " + str(q) + " " + alias)
-                                # pull the numerical value in the cell to either the right or bottom of the alias
-                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace("$", "")):
-                                    comparator.cell(row=15,
-                                                    column=3 + offset,
-                                                    value=float(cell_text[i+1][j].replace(",", "").replace("$", "")))
+                            for n in range(5):
+                                if cell == alias_5[n] and cell not in ["", None] and k == 0:
+                                    print("Table " + str(q) + " " + alias_5[n])
+                                    # pull the numerical value in the cell to either the right or bottom of the alias
+                                    if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace("$", "")):
+                                        comparator.cell(row=16,
+                                                        column=3 + n,
+                                                        value=float(cell_text[i+1][j].replace(",", "").replace("$", "")))
 
-                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1].replace("$", "")):
-                                    comparator.cell(row=15,
-                                                    column=3 + offset,
-                                                    value=float(cell_text[i][j + 1].replace(",", "").replace("$", "")))
+                                    elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1].replace("$", "")):
+                                        comparator.cell(row=16,
+                                                        column=3 + n,
+                                                        value=float(cell_text[i][j + 1].replace(",", "").replace("$", "")))
 
-                            # if total MBTU is found
-                            elif cell == alias and alias == aliases[1]:
-                                print("Table " + str(q) + " " + alias)
-                                # pull the numerical value in the cell to either the right or bottom of the alias
-                                if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j]):
-                                    comparator.cell(row=15,
-                                                    column=8 + offset,
-                                                    value=float(cell_text[i+1][j].replace(",", "")))
+                                # if total MBTU is found
+                                elif cell == alias_5[n] and cell not in ["", None] and k == 1:
+                                    print("Table " + str(q) + " " + alias_5[n])
+                                    # pull the numerical value in the cell to either the right or bottom of the alias
+                                    if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j]):
+                                        comparator.cell(row=16,
+                                                        column=10 + n,
+                                                        value=float(cell_text[i+1][j].replace(",", "")))
 
-                                elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
-                                    comparator.cell(row=15,
-                                                    column=8 + offset,
-                                                    value=float(cell_text[i][j + 1].replace(",", "")))
+                                    elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
+                                        comparator.cell(row=16,
+                                                        column=10 + n,
+                                                        value=float(cell_text[i][j + 1].replace(",", "")))
 
-                            # if ECM alias match is found
-                            elif cell == alias and alias in aliases[2:]:
-                                print("Table " + str(q) + " " + alias)
-                                # find the building name in the first row
-                                n = 0
-                                while n < len(cell_text[0]) - 1 and cell_text[0][n] in ["", None]:
-                                    n += 1
-                                b_name = cell_text[0][n]
-                                b_offset = 0
-                                found_offset = False
-                                b_ecms = 0
+                                # if ECM alias match is found
+                                elif cell == alias_5[n] and cell not in ["", None]:
+                                    print("Table " + str(q) + " " + alias_5[n])
+                                    # find the building name in the first row
+                                    n = 0
+                                    while n < len(cell_text[0]) - 1 and cell_text[0][n] in ["", None]:
+                                        n += 1
+                                    b_name = cell_text[0][n]
+                                    b_offset = 0
+                                    found_offset = False
+                                    b_ecms = 0
 
-                                # determine the offset of the building in ecm_list and how many ecms at the building
-                                for m, name in enumerate(ecm_list[0]):
-                                    # must ignore the last word in the building name because it may be 'TC' or 'ECM'
-                                    # unless building name is one word
-                                    if len(name.split(" ")) > 1:
-                                        split_name = " ".join(name.split(" ")[:-1])
-                                    else:
-                                        split_name = name
-
-                                    if split_name in b_name or b_name in split_name:
-                                        # set b_offset to the first row with matching building name
-                                        if not found_offset:
-                                            b_offset = m
-                                            found_offset = True
-
-                                        b_ecms += 1
-
-                                # pull the numerical values in the cells to either the right or bottom of the alias
-                                m = i
-                                n = j
-                                # skip blank cells and check the first populated cell
-                                while m < len(cell_text) - 1 and cell_text[m + 1][j] == '\xa0':
-                                    m += 1
-                                while n < len(cell_text[i]) - 1 and cell_text[i][n + 1] == '\xa0':
-                                    n += 1
-
-                                if is_float(cell_text[m + 1][j].replace(",", "").replace("$", "")):
-                                    p = i
-
-                                    while p < len(cell_text) - 1 and (
-                                            is_float(cell_text[p + 1][j].replace(",", "").replace("$", "")) or cell_text[p + 1][j] == '\xa0') \
-                                            and p - i < b_ecms:
-                                        if cell_text[p + 1][j] == '\xa0':
-                                            p += 1
-                                            continue
+                                    # determine the offset of the building in ecm_list and how many ecms at the building
+                                    for m, name in enumerate(ecm_list[0]):
+                                        # must ignore the last word in the building name because it may be 'TC' or 'ECM'
+                                        # unless building name is one word
+                                        if len(name.split(" ")) > 1:
+                                            split_name = " ".join(name.split(" ")[:-1])
                                         else:
-                                            comparator.cell(row=17 + b_offset + p - i,
-                                                            column=3 + 5 * (k - 2) + offset,
-                                                            value=float(cell_text[p + 1][j].replace(",", "").replace("$", "")))
-                                        p += 1
+                                            split_name = name
 
-                                elif is_float(cell_text[i][n + 1].replace(",", "").replace("$", "")):
-                                    p = j
+                                        if split_name in b_name or b_name in split_name:
+                                            # set b_offset to the first row with matching building name
+                                            if not found_offset:
+                                                b_offset = m
+                                                found_offset = True
 
-                                    while p < len(cell_text[i]) - 1 and (
-                                            is_float(cell_text[i][p + 1].replace(",", "").replace("$", "")) or cell_text[i][p + 1] == '\xa0') \
-                                            and p - j < b_ecms:
-                                        if cell_text[i][p + 1] == '\xa0':
+                                            b_ecms += 1
+
+                                    # pull the numerical values in the cells to either the right or bottom of the alias
+                                    m = i
+                                    n = j
+                                    # skip blank cells and check the first populated cell
+                                    while m < len(cell_text) - 1 and cell_text[m + 1][j] == '\xa0':
+                                        m += 1
+                                    while n < len(cell_text[i]) - 1 and cell_text[i][n + 1] == '\xa0':
+                                        n += 1
+
+                                    if is_float(cell_text[m + 1][j].replace(",", "").replace("$", "")):
+                                        p = i
+
+                                        while p < len(cell_text) - 1 and (
+                                                is_float(cell_text[p + 1][j].replace(",", "").replace("$", "")) or cell_text[p + 1][j] == '\xa0') \
+                                                and p - i < b_ecms:
+                                            if cell_text[p + 1][j] == '\xa0':
+                                                p += 1
+                                                continue
+                                            else:
+                                                comparator.cell(row=18 + b_offset + p - i,
+                                                                column=3 + 7 * (k - 2) + n,
+                                                                value=float(cell_text[p + 1][j].replace(",", "").replace("$", "")))
                                             p += 1
-                                            continue
-                                        else:
-                                            comparator.cell(row=17 + b_offset + p - j,
-                                                            column=3 + 5 * (k - 2) + offset,
-                                                            value=float(cell_text[i][p + 1].replace(",", "").replace("$", "")))
+
+                                    elif is_float(cell_text[i][n + 1].replace(",", "").replace("$", "")):
+                                        p = j
+
+                                        while p < len(cell_text[i]) - 1 and (
+                                                is_float(cell_text[i][p + 1].replace(",", "").replace("$", "")) or cell_text[i][p + 1] == '\xa0') \
+                                                and p - j < b_ecms:
+                                            if cell_text[i][p + 1] == '\xa0':
+                                                p += 1
+                                                continue
+                                            else:
+                                                comparator.cell(row=18 + b_offset + p - j,
+                                                                column=3 + 7 * (k - 2) + n,
+                                                                value=float(cell_text[i][p + 1].replace(",", "").replace("$", "")))
 
         self.output.save('Comparator.xlsx')
