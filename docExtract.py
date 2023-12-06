@@ -150,21 +150,21 @@ class DocExtractor:
             # pull data by ECM number starting with B3, copy directly to comparator
             row = 3
             while ecm_savings.cell(row=row, column=2).value not in (None, ''):
-                comparator.cell(row=18 + row, column=135, value=ecm_savings.cell(row=row, column=2).value)
-                comparator.cell(row=18 + row, column=136, value=ecm_savings.cell(row=row, column=9).value)
+                comparator.cell(row=15 + row, column=135, value=ecm_savings.cell(row=row, column=2).value)
+                comparator.cell(row=15 + row, column=136, value=ecm_savings.cell(row=row, column=9).value)
                 row += 1
 
             # copy total to Comparator.xlsx
-            comparator.cell(row=18, column=136, value=ecm_savings.cell(row=row, column=9).value)
+            comparator.cell(row=16, column=136, value=ecm_savings.cell(row=row, column=9).value)
 
         # search for table data within Word docx file
         elif self.doc_type == 'docx':
             # populate list with alias inputs
-            aliases = [[comparator.cell(row=13, column=3 + i).value for i in range(5)], [comparator.cell(row=13, column=10 + j).value for j in range(5)]]
+            aliases = [[comparator.cell(row=11, column=3 + i).value for i in range(5)],
+                       [comparator.cell(row=11, column=10 + j).value for j in range(5)]]
             for data_offset in range(21):
-                for alias_offset in range(5):
-                    aliases.append([comparator.cell(row=13, column=3 + 7 * data_offset + alias_offset).value])
-
+                aliases.append([comparator.cell(row=13, column=3 + 7 * data_offset + alias_offset).value for alias_offset in range(5)])
+            print("aliases ", aliases)
             print("Extracting:")
             # iterate through each table in the Word docx (xml) and load the cell values into an array
             for q, table in enumerate(self.data.tables):
@@ -178,37 +178,37 @@ class DocExtractor:
                         # search each table cell for each alias
                         for k, alias_5 in enumerate(aliases):
                             # if total $ savings is found:
-                            for n in range(5):
-                                if cell == alias_5[n] and cell not in ["", None] and k == 0:
-                                    print("Table " + str(q) + " " + alias_5[n])
+                            for c in range(5):
+                                if cell == alias_5[c] and cell not in ["", None] and k == 0:
+                                    print("Table " + str(q) + " " + alias_5[c])
                                     # pull the numerical value in the cell to either the right or bottom of the alias
                                     if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace("$", "")):
                                         comparator.cell(row=16,
-                                                        column=3 + n,
+                                                        column=3 + c,
                                                         value=float(cell_text[i+1][j].replace(",", "").replace("$", "")))
 
                                     elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1].replace("$", "")):
                                         comparator.cell(row=16,
-                                                        column=3 + n,
+                                                        column=3 + c,
                                                         value=float(cell_text[i][j + 1].replace(",", "").replace("$", "")))
 
                                 # if total MBTU is found
-                                elif cell == alias_5[n] and cell not in ["", None] and k == 1:
-                                    print("Table " + str(q) + " " + alias_5[n])
+                                elif cell == alias_5[c] and cell not in ["", None] and k == 1:
+                                    print("Table " + str(q) + " " + alias_5[c])
                                     # pull the numerical value in the cell to either the right or bottom of the alias
                                     if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j]):
                                         comparator.cell(row=16,
-                                                        column=10 + n,
+                                                        column=10 + c,
                                                         value=float(cell_text[i+1][j].replace(",", "")))
 
                                     elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
                                         comparator.cell(row=16,
-                                                        column=10 + n,
+                                                        column=10 + c,
                                                         value=float(cell_text[i][j + 1].replace(",", "")))
 
                                 # if ECM alias match is found
-                                elif cell == alias_5[n] and cell not in ["", None]:
-                                    print("Table " + str(q) + " " + alias_5[n])
+                                elif cell == alias_5[c] and cell not in ["", None]:
+                                    print("Table " + str(q) + " " + alias_5[c])
                                     # find the building name in the first row
                                     n = 0
                                     while n < len(cell_text[0]) - 1 and cell_text[0][n] in ["", None]:
@@ -255,7 +255,7 @@ class DocExtractor:
                                                 continue
                                             else:
                                                 comparator.cell(row=18 + b_offset + p - i,
-                                                                column=3 + 7 * (k - 2) + n,
+                                                                column=3 + 7 * k + c - 14,
                                                                 value=float(cell_text[p + 1][j].replace(",", "").replace("$", "")))
                                             p += 1
 
@@ -270,7 +270,7 @@ class DocExtractor:
                                                 continue
                                             else:
                                                 comparator.cell(row=18 + b_offset + p - j,
-                                                                column=3 + 7 * (k - 2) + n,
+                                                                column=3 + 7 * k + c - 14,
                                                                 value=float(cell_text[i][p + 1].replace(",", "").replace("$", "")))
 
         self.output.save('Comparator.xlsx')
