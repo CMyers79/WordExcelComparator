@@ -11,7 +11,11 @@ from docx import Document
 # helper function returns boolean for string contains int or float
 def is_float(string):
     try:
-        float(string.replace(",", ""))
+        float(string.replace("$", "")
+                    .replace(",", "")
+                    .replace("- ", "0")
+                    .replace("(", "-")
+                    .replace(")", ""))
         return True
     except ValueError:
         return False
@@ -182,15 +186,23 @@ class DocExtractor:
                                 if cell == alias_5[c] and cell not in ["", None] and k == 0:
                                     print("Table " + str(q) + " " + alias_5[c])
                                     # pull the numerical value in the cell to either the right or bottom of the alias
-                                    if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j].replace("$", "")):
+                                    if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j]):
                                         comparator.cell(row=16,
                                                         column=3 + c,
-                                                        value=float(cell_text[i+1][j].replace(",", "").replace("$", "")))
+                                                        value=float(cell_text[i+1][j].replace("$", "")
+                                                                                     .replace(",", "")
+                                                                                     .replace("- ", "0")
+                                                                                     .replace("(", "-")
+                                                                                     .replace(")", "")))
 
-                                    elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1].replace("$", "")):
+                                    elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
                                         comparator.cell(row=16,
                                                         column=3 + c,
-                                                        value=float(cell_text[i][j + 1].replace(",", "").replace("$", "")))
+                                                        value=float(cell_text[i][j + 1].replace("$", "")
+                                                                                       .replace(",", "")
+                                                                                       .replace("- ", "0")
+                                                                                       .replace("(", "-")
+                                                                                       .replace(")", "")))
 
                                 # if total MBTU is found
                                 elif cell == alias_5[c] and cell not in ["", None] and k == 1:
@@ -199,12 +211,20 @@ class DocExtractor:
                                     if i < len(cell_text) - 1 and is_float(cell_text[i + 1][j]):
                                         comparator.cell(row=16,
                                                         column=10 + c,
-                                                        value=float(cell_text[i+1][j].replace(",", "")))
+                                                        value=float(cell_text[i+1][j].replace("$", "")
+                                                                                     .replace(",", "")
+                                                                                     .replace("- ", "0")
+                                                                                     .replace("(", "-")
+                                                                                     .replace(")", "")))
 
                                     elif j < len(cell_text[i]) - 1 and is_float(cell_text[i][j + 1]):
                                         comparator.cell(row=16,
                                                         column=10 + c,
-                                                        value=float(cell_text[i][j + 1].replace(",", "")))
+                                                        value=float(cell_text[i][j + 1].replace("$", "")
+                                                                                       .replace(",", "")
+                                                                                       .replace("- ", "0")
+                                                                                       .replace("(", "-")
+                                                                                       .replace(")", "")))
 
                                 # if ECM alias match is found
                                 elif cell == alias_5[c] and cell not in ["", None]:
@@ -226,7 +246,6 @@ class DocExtractor:
                                             split_name = " ".join(name.split(" ")[:-1])
                                         else:
                                             split_name = name
-
                                         if split_name in b_name or b_name in split_name:
                                             # set b_offset to the first row with matching building name
                                             if not found_offset:
@@ -243,12 +262,17 @@ class DocExtractor:
                                         m += 1
                                     while n < len(cell_text[i]) - 1 and cell_text[i][n + 1] == '\xa0':
                                         n += 1
+                                    print(float(cell_text[m + 1][j].replace("$", "")
+                                                             .replace(",", "")
+                                                             .replace("- ", "0")
+                                                             .replace("(", "-")
+                                                             .replace(")", "")))
 
-                                    if is_float(cell_text[m + 1][j].replace(",", "").replace("$", "")):
+                                    if is_float(cell_text[m + 1][j]):
                                         p = i
 
                                         while p < len(cell_text) - 1 and (
-                                                is_float(cell_text[p + 1][j].replace(",", "").replace("$", "")) or cell_text[p + 1][j] == '\xa0') \
+                                                is_float(cell_text[p + 1][j]) or cell_text[p + 1][j] == '\xa0') \
                                                 and p - i < b_ecms:
                                             if cell_text[p + 1][j] == '\xa0':
                                                 p += 1
@@ -256,14 +280,18 @@ class DocExtractor:
                                             else:
                                                 comparator.cell(row=18 + b_offset + p - i,
                                                                 column=3 + 7 * k + c - 14,
-                                                                value=float(cell_text[p + 1][j].replace(",", "").replace("$", "")))
+                                                                value=float(cell_text[p + 1][j].replace("$", "")
+                                                                                               .replace(",", "")
+                                                                                               .replace("- ", "0")
+                                                                                               .replace("(", "-")
+                                                                                               .replace(")", "")))
                                             p += 1
 
-                                    elif is_float(cell_text[i][n + 1].replace(",", "").replace("$", "")):
+                                    elif is_float(cell_text[i][n + 1]):
                                         p = j
 
                                         while p < len(cell_text[i]) - 1 and (
-                                                is_float(cell_text[i][p + 1].replace(",", "").replace("$", "")) or cell_text[i][p + 1] == '\xa0') \
+                                                is_float(cell_text[i][p + 1]) or cell_text[i][p + 1] == '\xa0') \
                                                 and p - j < b_ecms:
                                             if cell_text[i][p + 1] == '\xa0':
                                                 p += 1
@@ -271,6 +299,10 @@ class DocExtractor:
                                             else:
                                                 comparator.cell(row=18 + b_offset + p - j,
                                                                 column=3 + 7 * k + c - 14,
-                                                                value=float(cell_text[i][p + 1].replace(",", "").replace("$", "")))
+                                                                value=float(cell_text[i][p + 1].replace("$", "")
+                                                                                               .replace(",", "")
+                                                                                               .replace("- ", "0")
+                                                                                               .replace("(", "-")
+                                                                                               .replace(")", "")))
 
         self.output.save('Comparator.xlsx')
